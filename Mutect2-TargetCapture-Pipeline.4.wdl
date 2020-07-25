@@ -63,7 +63,7 @@ workflow Multisample_Variant_Calling {
             ref_dict=ReferenceFastaDict,
             targets=TargetIntervals,
             target_padding=TargetIntervalsPadding,
-            exclude_intervals=ExcludeRegions,
+            exclude_regions=ExcludeRegions,
             scatter_count=TargetScatterCount,
             docker_name=VariantCallDocker,
             task_memory=SmallMemory,
