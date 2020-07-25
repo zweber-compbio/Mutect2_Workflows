@@ -22,6 +22,7 @@ workflow Multisample_Variant_Calling {
     File TargetIntervals # .interval_list file containing capture regions
     Int TargetScatterCount # number of parallel partitions of variant caller
     Int TargetIntervalsPadding # amount of extra bp to pad interval shoulders
+    File? ExcludeIntervals # intervals to ignore becuase they are problematic
 
     ## bam files and sample Names
     Array[File] TumorBams # array of tumor bams for variant caller
@@ -62,6 +63,7 @@ workflow Multisample_Variant_Calling {
             ref_dict=ReferenceFastaDict,
             targets=TargetIntervals,
             target_padding=TargetIntervalsPadding,
+            exclude_intervals=ExcludeIntervals,
             scatter_count=TargetScatterCount,
             docker_name=VariantCallDocker,
             task_memory=SmallMemory,
@@ -273,6 +275,8 @@ task Split_Targets {
     File ref_fai # reference sequence fasta index from samtools (<ref-name>.fasta.fai)
     File ref_dict # reference sequence dictionary from samtools (<ref-name>.dict)
     File targets # file containing sequencing regions of interest (<regions>.interval_list)
+    File? exclude_intervals # intervals to exclude from the master list before splitting
+    String exclude_info = if (defined(exclude_intervals)) then "-XL ${exclude_intervals}" else " "
     Int target_padding # integer number of bp to pad targets on each side
     Int scatter_count # number of sub regions (and subsequent parallel processes) to divide regions
     String docker_name # name of docker image contianing gatk toolchain
@@ -287,7 +291,8 @@ task Split_Targets {
             --reference ${ref_fa} \
             --intervals ${targets} \
             --interval-padding ${target_padding} \
-            --scatter-count ${scatter_count}
+            --scatter-count ${scatter_count} \
+            ${exclude_info}
     }
 
     # specify runtime params
