@@ -9,7 +9,8 @@
 #   outlined by the GNU-GPLv3.0
 
 # import external modules for sub-workflows
-import "Mutect2-TargetCapture-M-PrepareBams.wdl" as Prepare_Bams
+import "https://github.com/zweber-compbio/Mutect2_Workflows/blob/master/Mutect2-TargetCapture-M-PrepareBams.wdl" as Prepare_Bams
+
 
 # Workflow Definition
 workflow Multisample_Variant_Calling {
